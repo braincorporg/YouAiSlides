@@ -1,7 +1,8 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from pptx import Presentation
 from pptx.util import Inches
 import os
+import base64
 
 app = Flask(__name__)
 
