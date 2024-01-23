@@ -34,8 +34,10 @@ def create_pptx():
 
     pptx_file = 'presentation.pptx'
     prs.save(pptx_file)
+    with open(pptx_file, "rb") as file:
+        encoded_string = base64.b64encode(file.read()).decode()
 
-    return send_file(pptx_file, as_attachment=True)
+    return jsonify({"file_data": encoded_string})
 
 if __name__ == '__main__':
     app.run(debug=True)
