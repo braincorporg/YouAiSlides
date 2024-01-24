@@ -7,6 +7,11 @@ import base64
 
 app = Flask(__name__)
 
+def hex_to_rgb(hex_color):
+    """ Convert hex color string to RGB. """
+    hex_color = hex_color.lstrip('#')
+    return RGBColor(int(hex_color[:2], 16), int(hex_color[2:4], 16), int(hex_color[4:], 16))
+
 @app.route('/create_pptx', methods=['POST'])
 def create_pptx():
     data = request.json
@@ -21,14 +26,14 @@ def create_pptx():
             background = slide.background
             fill = background.fill
             fill.solid()
-            fill.fore_color.rgb = RGBColor.from_string(slide_data['background_color'])
+            fill.fore_color.rgb = hex_to_rgb(slide_data['background_color'])
 
         # Handling title
         if 'title' in slide_data and slide.shapes.title:
             title_shape = slide.shapes.title
             title_shape.text = slide_data['title']
             if 'title_color' in slide_data:
-                title_shape.text_frame.paragraphs[0].font.color.rgb = RGBColor.from_string(slide_data['title_color'])
+                title_shape.text_frame.paragraphs[0].font.color.rgb = hex_to_rgb(slide_data['title_color'])
             if 'title_bold' in slide_data:
                 title_shape.text_frame.paragraphs[0].font.bold = slide_data['title_bold']
             if 'title_italic' in slide_data:
@@ -40,7 +45,7 @@ def create_pptx():
             if hasattr(content_placeholder, 'text'):
                 content_placeholder.text = slide_data['content']
                 if 'content_color' in slide_data:
-                    content_placeholder.text_frame.paragraphs[0].font.color.rgb = RGBColor.from_string(slide_data['content_color'])
+                    content_placeholder.text_frame.paragraphs[0].font.color.rgb = hex_to_rgb(slide_data['content_color'])
                 if 'content_bold' in slide_data:
                     content_placeholder.text_frame.paragraphs[0].font.bold = slide_data['content_bold']
                 if 'content_italic' in slide_data:
