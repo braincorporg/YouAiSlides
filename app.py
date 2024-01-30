@@ -51,7 +51,7 @@ def create_pptx():
                 if 'content_italic' in slide_data:
                     content_placeholder.text_frame.paragraphs[0].font.italic = slide_data['content_italic']
         # Adding an image if path is provided and valid
-        if 'image_path' in slide_data and os.path.exists(slide_data['image_path']):
+        if 'image_path' in slide_data :
             left = Inches(2)
             top = Inches(2)
             width = Inches(4)
