@@ -20,7 +20,7 @@ def create_pptx():
     for slide_data in data.get('slides', []):
         slide_layout = prs.slide_layouts[slide_data['layout']]
         slide = prs.slides.add_slide(slide_layout)
-
+        
         # Set background color if provided
         if 'background_color' in slide_data:
             background = slide.background
@@ -50,7 +50,6 @@ def create_pptx():
                     content_placeholder.text_frame.paragraphs[0].font.bold = slide_data['content_bold']
                 if 'content_italic' in slide_data:
                     content_placeholder.text_frame.paragraphs[0].font.italic = slide_data['content_italic']
-
         # Adding an image if path is provided and valid
         if 'image_path' in slide_data and os.path.exists(slide_data['image_path']):
             left = Inches(2)
@@ -58,6 +57,27 @@ def create_pptx():
             width = Inches(4)
             height = Inches(3)
             slide.shapes.add_picture(slide_data['image_path'], left, top, width=width, height=height)
+            
+        # Adding textboxes
+        for textbox in slide_data.get('textboxes', []):
+            left = Inches(textbox.get('left', 0))
+            top = Inches(textbox.get('top', 0))
+            width = Inches(textbox.get('width', 5))
+            height = Inches(textbox.get('height', 1))
+            txBox = slide.shapes.add_textbox(left, top, width, height)
+            tf = txBox.text_frame
+            tf.text = textbox.get('text', '')
+
+            # Apply text formatting if specified
+            p = tf.paragraphs[0]
+            if 'font_size' in textbox:
+                p.font.size = Pt(textbox['font_size'])
+            if 'font_color' in textbox:
+                p.font.color.rgb = hex_to_rgb(textbox['font_color'])
+            if 'bold' in textbox:
+                p.font.bold = textbox['bold']
+            if 'italic' in textbox:
+                p.font.italic = textbox['italic']
 
     pptx_file = 'presentation.pptx'
     prs.save(pptx_file)
